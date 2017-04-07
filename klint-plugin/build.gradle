@@ -1,0 +1,28 @@
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: 'groovy'
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'maven-publish'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.1'
+}
+
+gradlePlugin {
+    plugins {
+        klintPlugin {
+            id = "io.ehdev.gradle.klint"
+            implementationClass = "io.ehdev.gradle.klint.KlintPlugin"
+        }
+    }
+}
+
+publishing {
+    repositories {
+        mavenLocal()
+    }
+}
