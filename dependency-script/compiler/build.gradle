@@ -1,0 +1,33 @@
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: 'maven-publish'
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    compileOnly (project(':dependency-script-api')) {
+        transitive = false
+    }
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-compiler-embeddable', version: '1.1.1'
+    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+
+    testCompile localGroovy()
+    testCompile project(':dependency-script-plugin')
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude group: 'org.codehaus.groovy'
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}

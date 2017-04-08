@@ -66,7 +66,12 @@ hs_err_pid*
 
 ### Gradle ###
 .gradle
-/build/
+dependency-script/api/build/
+dependency-script/compiler/build/
+dependency-script/plugin/build/
+dependency-script/build
+build
+klint-plugin/build
 
 # Ignore Gradle GUI config
 gradle-app.setting
