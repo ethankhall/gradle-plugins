@@ -22,15 +22,17 @@ internal class KotlinScriptCompiler(val classLoader: ClassLoader) {
 
     val messageCollector = DelegatingMessageCollector()
 
-    fun compileScript(file: File): Class<*> {
+    fun compileScript(outputDirectory: File, scriptFile: File): Class<*> {
         withRootDisposable { rootDisposable ->
             val configuration = CompilerConfiguration().apply {
-                addKotlinSourceRoots(listOf(file.canonicalPath))
+                addKotlinSourceRoots(listOf(scriptFile.canonicalPath))
                 addJvmClasspathRoots(PathUtil.getJdkClassesRoots())
                 addJvmClasspathRoot(PathUtil.getResourcePathForClass(Unit::class.java))
                 addJvmClasspathRoot(PathUtil.getResourcePathForClass(KotlinDependencyScript::class.java))
                 addJvmClasspathRoot(PathUtil.getResourcePathForClass(DependencyDefinitions::class.java))
                 put(CommonConfigurationKeys.MODULE_NAME, "dependencyScript")
+                put(JVMConfigurationKeys.OUTPUT_DIRECTORY, outputDirectory)
+                put(JVMConfigurationKeys.RETAIN_OUTPUT_IN_MEMORY, true)
                 add(JVMConfigurationKeys.SCRIPT_DEFINITIONS, KotlinScriptDefinition(KotlinDependencyScript::class))
                 put<MessageCollector>(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, messageCollector)
             }
