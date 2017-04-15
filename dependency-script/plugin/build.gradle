@@ -1,3 +1,6 @@
+plugins {
+    id "nebula.integtest" version "3.3.0"
+}
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "java-gradle-plugin"
 apply plugin: 'groovy'
@@ -10,6 +13,10 @@ repositories {
     }
 }
 
+configurations {
+    compiler
+}
+
 dependencies {
     compile gradleApi()
     compile (project(':dependency-script-api')) {
@@ -18,13 +25,14 @@ dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.1'
     compile 'com.netflix.nebula:nebula-dependency-recommender:4.1.2'
 
-    compileOnly (project(':dependency-script-compiler')) {
-        transitive = false
-    }
+    compiler project(':dependency-script-compiler')
 
+    testCompile localGroovy()
     testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude group: 'org.codehaus.groovy'
     }
+
+    integTestCompile gradleTestKit()
 }
 
 gradlePlugin {
@@ -37,7 +45,12 @@ gradlePlugin {
 }
 
 processResources {
-    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: ['version': project.version as String])
+    into('compiler') {
+        from { configurations.compiler }
+        rename 'dependency-script-compiler-.*.jar', 'dependency-script-compiler.jar'
+        rename 'kotlin-compiler-embeddable-.*.jar', 'kotlin-compiler-embeddable.jar'
+    }
+    filteringCharset = 'UTF-8'
 }
 
 publishing {

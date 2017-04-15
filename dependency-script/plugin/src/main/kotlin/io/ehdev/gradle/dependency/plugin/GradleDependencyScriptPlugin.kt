@@ -3,7 +3,6 @@ package io.ehdev.gradle.dependency.plugin
 import io.ehdev.gradle.dependency.api.DependencyDefinitions
 import io.ehdev.gradle.dependency.internal.api.DefaultDependencyDefinitions
 import io.ehdev.gradle.dependency.internal.md5Digest
-import io.ehdev.gradle.dependency.internal.toHex
 import netflix.nebula.dependency.recommender.DependencyRecommendationsPlugin
 import netflix.nebula.dependency.recommender.provider.RecommendationProvider
 import netflix.nebula.dependency.recommender.provider.RecommendationProviderContainer
@@ -19,7 +18,7 @@ import java.util.*
 
 open class GradleDependencyScriptPlugin : Plugin<Project> {
 
-    val logger = LoggerFactory.getLogger(this::class.java)!!
+    val logger = LoggerFactory.getLogger(GradleDependencyScriptPlugin::class.java)!!
 
     override fun apply(project: Project) {
         project.plugins.apply(DependencyRecommendationsPlugin::class.java)
@@ -47,8 +46,8 @@ open class GradleDependencyScriptPlugin : Plugin<Project> {
     }
 
     private fun configureExtraProperties(project: Project, dependencyDefinitions: DefaultDependencyDefinitions) {
-        project.extensions.extraProperties["versions"] = dependencyDefinitions.versions
-        project.extensions.extraProperties["libraries"] = dependencyDefinitions.buildLibrariesAsMap()
+        project.extensions.create("deps", DependencyExtension::class.java,
+                dependencyDefinitions.buildLibrariesAsMap(), dependencyDefinitions.versions)
     }
 
     private fun configureExcludes(project: Project, dependencyDefinitions: DefaultDependencyDefinitions) {
@@ -67,38 +66,52 @@ open class GradleDependencyScriptPlugin : Plugin<Project> {
     }
 
     private fun getDependencyDefinitions(project: Project): DefaultDependencyDefinitions {
-        val dependenciesKts = File(project.rootDir, "gradle/dependencies.dep.kts")
-        if (!dependenciesKts.exists()) {
-            throw GradleException("Unable to find ${dependenciesKts.path}")
+        val dependencyFiles = File(project.rootDir, "gradle")
+                .listFiles { _, name -> name?.endsWith(".dep.kts") ?: false }
+                ?.filter { it.isFile } ?: emptyList()
+
+        if (dependencyFiles.isEmpty()) {
+            throw GradleException("Unable to find any *.dep.kts files in ${File(project.rootDir, "gradle").absolutePath}")
         }
 
-        val hex = toHex(dependenciesKts.md5Digest())
+        val hex = dependencyFiles.map { it.readText() }.joinToString("\n").md5Digest()
         val cacheDir = File(project.rootDir, "/.gradle/dependency-script/$hex")
 
-        val detachedConfiguration = project.configurations.detachedConfiguration(
-                project.dependencies.create("io.ehdev.gradle:dependency-script-compiler:${findVersion()}")
-        )
-        val compilerJars = detachedConfiguration.files.map { it.toURI().toURL() }.toTypedArray()
-
-        if (!cacheDir.exists()) {
+        val scriptClassNames = if (!cacheDir.exists()) {
             cacheDir.mkdir()
-            compileScriptToClass(dependenciesKts, cacheDir, compilerJars)
+            compileScriptToClass(dependencyFiles.toList(), cacheDir, extractJars())
+        } else {
+            emptyList()
         }
         val definitions = DefaultDependencyDefinitions()
-        val classLoader = URLClassLoader(compilerJars + cacheDir.toURI().toURL(), this::class.java.classLoader)
-        classLoader.loadClass("Dependencies_dep").getConstructor(DependencyDefinitions::class.java).newInstance(definitions)
+        val classLoader = URLClassLoader(extractJars() + cacheDir.toURI().toURL(), this::class.java.classLoader)
+        scriptClassNames.forEach {
+            classLoader.loadClass(it).getConstructor(DependencyDefinitions::class.java).newInstance(definitions)
+        }
 
         return definitions
     }
 
-    private fun compileScriptToClass(dependenciesKts: File, cacheDir: File, compilerJars: Array<URL>) {
-        logger.warn("Files: " + compilerJars.map { it.file }.joinToString(":"))
+    private fun extractJars(): Array<URL> {
+        return listOf("dependency-script-compiler.jar", "kotlin-compiler-embeddable.jar").map {
+            GradleDependencyScriptPlugin::class.java.classLoader.getResource("compiler/$it")
+        }.toTypedArray()
+    }
+
+    private fun compileScriptToClass(dependenciesKts: List<File>, cacheDir: File, compilerJars: Array<URL>): List<String> {
         val loader = RootLoader(compilerJars, this::class.java.classLoader)
+
+        logger.debug("compiler jars: {}", compilerJars)
+
+        val classNames: MutableList<String> = mutableListOf()
 
         val runnableClass = loader.loadClass("io.ehdev.gradle.dependency.compiler.CompilerRunnable")
         val runnable = runnableClass
-                .getConstructor(File::class.java, File::class.java)
-                .newInstance(dependenciesKts, cacheDir) as Runnable
+                .getConstructor(List::class.java, File::class.java, MutableList::class.java)
+                .newInstance(dependenciesKts, cacheDir, classNames) as Runnable
         runnable.run()
+
+        logger.debug("class names: {}", classNames)
+        return classNames
     }
 }
