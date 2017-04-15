@@ -3,9 +3,9 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.1.1" apply false
     id "com.jfrog.bintray" version "1.7.3" apply false
     id 'tech.crom.version-manager' version 'LATEST'
-    id 'io.ehdev.gradle.klint' version 'LATEST' apply false
-    id 'io.ehdev.gradle.dependency-resolve' version "LATEST" apply false
-    id 'io.ehdev.gradle.build-dir' version 'LATEST' apply false
+    id 'io.ehdev.gradle.klint' version '0.0.6' apply false
+    id 'io.ehdev.gradle.dependency-resolve' version '0.0.6' apply false
+    id 'io.ehdev.gradle.build-dir' version '0.0.6' apply false
 }
 
 allprojects {

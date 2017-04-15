@@ -38,7 +38,7 @@ dependencies {
 
 gradlePlugin {
     plugins {
-        dependenciesPlugin {
+        dependencies {
             id = "io.ehdev.gradle.dependency-script"
             implementationClass = "io.ehdev.gradle.dependency.plugin.GradleDependencyScriptPlugin"
         }
