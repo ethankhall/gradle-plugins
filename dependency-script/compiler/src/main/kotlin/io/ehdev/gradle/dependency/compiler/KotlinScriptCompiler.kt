@@ -1,6 +1,5 @@
 package io.ehdev.gradle.dependency.compiler
 
-import io.ehdev.gradle.dependency.api.DependencyDefinitions
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
@@ -27,9 +26,7 @@ internal class KotlinScriptCompiler(val classLoader: ClassLoader) {
             val configuration = CompilerConfiguration().apply {
                 addKotlinSourceRoots(listOf(scriptFile.canonicalPath))
                 addJvmClasspathRoots(PathUtil.getJdkClassesRoots())
-                addJvmClasspathRoot(PathUtil.getResourcePathForClass(Unit::class.java))
-                addJvmClasspathRoot(PathUtil.getResourcePathForClass(KotlinDependencyScript::class.java))
-                addJvmClasspathRoot(PathUtil.getResourcePathForClass(DependencyDefinitions::class.java))
+                getClassesForClasspath().forEach { addJvmClasspathRoot(PathUtil.getResourcePathForClass(it)) }
                 put(CommonConfigurationKeys.MODULE_NAME, "dependencyScript")
                 put(JVMConfigurationKeys.OUTPUT_DIRECTORY, outputDirectory)
                 put(JVMConfigurationKeys.RETAIN_OUTPUT_IN_MEMORY, true)

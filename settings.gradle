@@ -2,7 +2,9 @@ include 'klint-plugin'
 include 'dependency-script-compiler'
 include 'dependency-script-api'
 include 'dependency-script-plugin'
+include 'dependency-script-idea-plugin'
 
 project(':dependency-script-compiler').projectDir = new File(settingsDir, 'dependency-script/compiler')
 project(':dependency-script-api').projectDir = new File(settingsDir, 'dependency-script/api')
 project(':dependency-script-plugin').projectDir = new File(settingsDir, 'dependency-script/plugin')
+project(':dependency-script-idea-plugin').projectDir = new File(settingsDir, 'dependency-script/idea-plugin')

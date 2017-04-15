@@ -1,0 +1,29 @@
+plugins {
+    id "org.jetbrains.intellij" version "0.2.7"
+    id 'java'
+}
+
+apply plugin: 'org.jetbrains.kotlin.jvm'
+
+intellij {
+    version = 'LATEST-EAP-SNAPSHOT'
+    type "IC"
+    pluginName 'dependency-script'
+    downloadSources true
+    updateSinceUntilBuild = false
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly group: 'org.jetbrains.kotlin', name: 'kotlin-compiler-embeddable', version: '1.1.1'
+
+    compile(project(':dependency-script-compiler')) {
+        transitive = false
+    }
+    compile(project(':dependency-script-api')) {
+        transitive = false
+    }
+}

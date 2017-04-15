@@ -1,4 +1,4 @@
-package io.ehdev.gradle.dependency.internal
+package io.ehdev.gradle.dependency.compiler
 
 @DslMarker
 internal annotation class KotlinDependencyScriptMarker
