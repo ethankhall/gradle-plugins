@@ -13,7 +13,7 @@ jobs:
 
       - run:
           name: Update Cache
-          command: ./gradlew dependencies
+          command: ./gradlew resolveDependencies
 
       - save_cache:
           key: deps1-{{ .Branch }}

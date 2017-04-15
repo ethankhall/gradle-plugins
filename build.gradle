@@ -3,9 +3,13 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.1.1" apply false
     id "com.jfrog.bintray" version "1.7.3" apply false
     id 'tech.crom.version-manager' version 'LATEST'
+    id 'io.ehdev.gradle.klint' version 'LATEST' apply false
+    id 'io.ehdev.gradle.dependency-resolve' version "LATEST" apply false
 }
 
 allprojects {
+    apply plugin: 'io.ehdev.gradle.dependency-resolve'
+
     group = 'io.ehdev.gradle'
 
     if(path != ':') {
@@ -15,7 +19,7 @@ allprojects {
     }
 
     plugins.withType(org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper) {
-//        plugins.apply('io.ehdev.gradle.klint')
+        plugins.apply('io.ehdev.gradle.klint')
     }
 
     repositories {

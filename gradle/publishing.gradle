@@ -33,8 +33,7 @@ bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
     publications = ['mainJava']
-//    publish = true
-//    dryRun = true
+    publish = true
     pkg {
         repo = 'gradle-plugins'
         name = project.name
