@@ -36,5 +36,5 @@ jobs:
       - run:
           name: Upload Aritfacts
           command: |
-            ./gradlew bintrayUpload
             ./gradlew claimVersion
+            ./gradlew bintrayUpload
