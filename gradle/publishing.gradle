@@ -5,8 +5,8 @@ apply plugin: 'com.jfrog.bintray'
 def pomConfig = {
     licenses {
         license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            name "The 3-Clause BSD License"
+            url "https://opensource.org/licenses/BSD-3-Clause"
             distribution "repo"
         }
     }
@@ -38,7 +38,7 @@ bintray {
         repo = 'gradle-plugins'
         name = project.name
         userOrg = 'ethankhall'
-        licenses = ['Apache-2.0']
+        licenses = ['BSD-3-Clause']
         vcsUrl = 'https://github.com/ethankhall/gradle-plugins.git'
         version {
             name = project.version
