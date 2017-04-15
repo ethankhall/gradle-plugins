@@ -12,7 +12,7 @@ class KotlinScriptCompilerKtTest extends Specification {
 
     def 'can load script'() {
         setup:
-        def resource = KotlinScriptCompilerKtTest.classLoader.getResourceAsStream('samples/simpleCompile.kts')
+        def resource = KotlinScriptCompilerKtTest.classLoader.getResourceAsStream('samples/simpleCompile.dep.kts')
         def file = temporaryFolder.newFile('test-kotlin-file.kts')
         file.text = resource.text
 

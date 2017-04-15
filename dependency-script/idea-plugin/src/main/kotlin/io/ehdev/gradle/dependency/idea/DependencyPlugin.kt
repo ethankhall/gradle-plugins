@@ -5,15 +5,15 @@ import com.intellij.openapi.projectRoots.JavaSdk
 import com.intellij.openapi.projectRoots.ProjectJdkTable
 import com.intellij.openapi.projectRoots.ex.PathUtilEx
 import com.intellij.util.PathUtil.getJarPathForClass
+import io.ehdev.gradle.dependency.compiler.ImplicitImports
 import io.ehdev.gradle.dependency.compiler.KotlinDependencyScript
-import io.ehdev.gradle.dependency.compiler.getClassesForClasspath
 import org.jetbrains.kotlin.script.ScriptTemplatesProvider
 
 class DependencyPlugin(val project: Project) : ScriptTemplatesProvider {
     override val isValid: Boolean = true
 
     override val dependenciesClasspath: Iterable<String> by lazy {
-        getClassesForClasspath().map(::getJarPathForClass)
+        ImplicitImports.classpath.map(::getJarPathForClass)
     }
 
     override val environment: Map<String, Any?>? get() = mapOf(

@@ -1,6 +1,5 @@
 package io.ehdev.gradle.dependency.compiler
 
-import io.ehdev.gradle.dependency.api.DependencyDefinitions
 import org.jetbrains.kotlin.script.KotlinScriptExternalDependencies
 import org.jetbrains.kotlin.script.ScriptContents
 import org.jetbrains.kotlin.script.ScriptDependenciesResolver
@@ -25,9 +24,8 @@ class DepKtsScriptDependenciesResolver : ScriptDependenciesResolver {
     }
 
     fun findDeps(file: File): KotlinScriptExternalDependencies {
-        val lists = listOf(PathUtil.getResourcePathForClass(KotlinDependencyScript::class.java),
-                PathUtil.getResourcePathForClass(DependencyDefinitions::class.java))
-        return KotlinDepScriptDeps(lists, listOf("io.ehdev.gradle.dependency.api.DependencyDefinitions.*"), listOf(file))
+        val classpath = ImplicitImports.classpath.map { PathUtil.getResourcePathForClass(it) }
+        return KotlinDepScriptDeps(classpath, listOf("io.ehdev.gradle.dependency.api.DependencyDefinitions.*"), listOf(file))
     }
 }
 

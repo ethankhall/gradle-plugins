@@ -26,7 +26,7 @@ internal class KotlinScriptCompiler(val classLoader: ClassLoader) {
             val configuration = CompilerConfiguration().apply {
                 addKotlinSourceRoots(listOf(scriptFile.canonicalPath))
                 addJvmClasspathRoots(PathUtil.getJdkClassesRoots())
-                getClassesForClasspath().forEach { addJvmClasspathRoot(PathUtil.getResourcePathForClass(it)) }
+                ImplicitImports.classpath.forEach { addJvmClasspathRoot(PathUtil.getResourcePathForClass(it)) }
                 put(CommonConfigurationKeys.MODULE_NAME, "dependencyScript")
                 put(JVMConfigurationKeys.OUTPUT_DIRECTORY, outputDirectory)
                 put(JVMConfigurationKeys.RETAIN_OUTPUT_IN_MEMORY, true)
