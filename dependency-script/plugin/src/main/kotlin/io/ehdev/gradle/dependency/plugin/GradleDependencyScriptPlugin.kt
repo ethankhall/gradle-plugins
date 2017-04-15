@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.util.Properties
 
 open class GradleDependencyScriptPlugin : Plugin<Project> {
@@ -77,14 +79,16 @@ open class GradleDependencyScriptPlugin : Plugin<Project> {
         val hex = dependencyFiles.map { it.readText() }.joinToString("\n").md5Digest()
         val cacheDir = File(project.rootDir, "/.gradle/dependency-script/$hex")
 
+        val compilerJars = extractJars(File(project.rootDir, ".gradle/dependency-script/" + findVersion()))
+
         val scriptClassNames = if (!cacheDir.exists()) {
             cacheDir.mkdir()
-            compileScriptToClass(dependencyFiles.toList(), cacheDir, extractJars())
+            compileScriptToClass(dependencyFiles.toList(), cacheDir, compilerJars)
         } else {
             emptyList()
         }
         val definitions = DefaultDependencyDefinitions()
-        val classLoader = URLClassLoader(extractJars() + cacheDir.toURI().toURL(), this::class.java.classLoader)
+        val classLoader = URLClassLoader(compilerJars + cacheDir.toURI().toURL(), this::class.java.classLoader)
         scriptClassNames.forEach {
             classLoader.loadClass(it).getConstructor(DependencyDefinitions::class.java).newInstance(definitions)
         }
@@ -92,9 +96,14 @@ open class GradleDependencyScriptPlugin : Plugin<Project> {
         return definitions
     }
 
-    private fun extractJars(): Array<URL> {
+    private fun extractJars(directory: File): Array<URL> {
         return listOf("dependency-script-compiler.jar", "kotlin-compiler-embeddable.jar").map {
-            GradleDependencyScriptPlugin::class.java.classLoader.getResource("compiler/$it")
+            val resource = GradleDependencyScriptPlugin::class.java.classLoader.getResourceAsStream("compiler/$it")
+            val dest = directory.toPath().resolve(it)
+            if (!Files.exists(dest)) {
+                Files.copy(resource, dest, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+            }
+            dest.toUri().toURL()
         }.toTypedArray()
     }
 

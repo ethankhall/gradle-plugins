@@ -15,7 +15,8 @@ pluginManagement {
                 details.useVersion(blob.version)
             }
 
-            if (id in ['io.ehdev.gradle.dependency-resolve', 'io.ehdev.gradle.klint', 'io.ehdev.gradle.build-dir'] && details.requested.version == 'LATEST') {
+            if (id in ['io.ehdev.gradle.dependency-resolve', 'io.ehdev.gradle.klint',
+                       'io.ehdev.gradle.build-dir', 'io.ehdev.gradle.dependency-script'] && details.requested.version == 'LATEST') {
                 def blob = new JsonSlurper().parse(new URL("http://api.crom.tech/api/v1/project/ethankhall/repo/gradle-plugins/version/latest"))
                 println "Using the latest version of $id, which is ${blob.version}"
                 details.useVersion(blob.version)
