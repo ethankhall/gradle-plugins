@@ -2,7 +2,7 @@ apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'groovy'
 
-apply from : "$rootDir/gradle/publishing.gradle"
+apply from: "$rootDir/gradle/publishing.gradle"
 
 dependencies {
     compile gradleApi()
@@ -15,9 +15,18 @@ gradlePlugin {
             id = "io.ehdev.gradle.dependency-resolve"
             implementationClass = "io.ehdev.gradle.DependencyCachePlugin"
         }
+
+        buildDirectory {
+            id = "io.ehdev.gradle.build-dir"
+            implementationClass = "io.ehdev.gradle.BuildDirectoryPlugin"
+        }
     }
 }
 
-bintray.publications = ((bintray.publications as List<String>) + ['pluginMaven', 'dependnecyResolvePluginMarkerMaven']) as String[]
-bintrayUpload.dependsOn('publishDependnecyResolvePluginMarkerMavenPublicationToMavenLocal')
+['dependnecyResolve', 'buildDirectory'].each {
+    bintray.publications = ((bintray.publications as List<String>) + "${ it }PluginMarkerMaven") as String[]
+    bintrayUpload.dependsOn("publish${ it.capitalize() }PluginMarkerMavenPublicationToMavenLocal")
+}
+
+bintray.publications = ((bintray.publications as List<String>) + 'pluginMaven') as String[]
 bintrayUpload.dependsOn('publishPluginMavenPublicationToMavenLocal')
