@@ -81,12 +81,13 @@ class GradleDependencyScriptPluginTest extends Specification {
         when:
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir.root)
-                .withArguments('printDependencies', '-s')
+                .withArguments('printDependencies', '-s', '-d')
                 .withPluginClasspath()
                 .build()
         println result.output
 
         then:
+        noExceptionThrown()
         result.task(":printDependencies").outcome == TaskOutcome.SUCCESS
     }
 }

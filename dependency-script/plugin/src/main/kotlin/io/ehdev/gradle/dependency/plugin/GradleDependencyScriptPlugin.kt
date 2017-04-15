@@ -97,11 +97,14 @@ open class GradleDependencyScriptPlugin : Plugin<Project> {
     }
 
     private fun extractJars(directory: File): Array<URL> {
+        directory.mkdirs()
         return listOf("dependency-script-compiler.jar", "kotlin-compiler-embeddable.jar").map {
             val resource = GradleDependencyScriptPlugin::class.java.classLoader.getResourceAsStream("compiler/$it")
             val dest = directory.toPath().resolve(it)
             if (!Files.exists(dest)) {
-                Files.copy(resource, dest, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+                val tempFile = Files.createTempFile("copy", "jar")
+                Files.copy(resource, tempFile, StandardCopyOption.REPLACE_EXISTING)
+                Files.move(tempFile, dest, StandardCopyOption.ATOMIC_MOVE)
             }
             dest.toUri().toURL()
         }.toTypedArray()

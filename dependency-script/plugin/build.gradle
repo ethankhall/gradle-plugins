@@ -52,7 +52,9 @@ processResources {
         rename 'kotlin-compiler-embeddable-.*.jar', 'kotlin-compiler-embeddable.jar'
     }
     filteringCharset = 'UTF-8'
-    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: ['version': project.version as String])
+    filesMatching("**/*.properties") {
+        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: ['version': project.version as String])
+    }
 }
 
 check.dependsOn integrationTest
