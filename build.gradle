@@ -1,6 +1,16 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'io.ehdev.gradle:klint-plugin:+'
+    }
+}
 plugins {
     id 'com.gradle.build-scan' version '1.6'
-    id "org.jetbrains.kotlin.jvm" version "1.1.1"
+    id "org.jetbrains.kotlin.jvm" version "1.1.1" apply(false)
 }
 
 allprojects {
@@ -11,5 +21,8 @@ allprojects {
         buildDir = new File(rootDir, 'build/' + path.replace(':', '-').substring(1))
     } else {
         buildDir = new File(rootDir, 'build/' + project.name)
+    }
+    plugins.withType(org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper) {
+        plugins.apply('io.ehdev.gradle.klint')
     }
 }

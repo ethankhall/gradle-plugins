@@ -14,7 +14,7 @@ internal class DelegatingMessageCollector : MessageCollector {
     }
 
     override fun report(severity: CompilerMessageSeverity, message: String, location: CompilerMessageLocation) {
-        when(severity) {
+        when (severity) {
             CompilerMessageSeverity.ERROR -> logger.error(message)
             CompilerMessageSeverity.EXCEPTION -> logger.error(message)
             CompilerMessageSeverity.STRONG_WARNING -> logger.warn(message)
@@ -24,7 +24,7 @@ internal class DelegatingMessageCollector : MessageCollector {
             CompilerMessageSeverity.OUTPUT -> logger.info(message)
         }
 
-        if(severity.isError) {
+        if (severity.isError) {
             errors = true
         }
     }

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
-import java.util.*
+import java.util.Properties
 
 open class GradleDependencyScriptPlugin : Plugin<Project> {
 

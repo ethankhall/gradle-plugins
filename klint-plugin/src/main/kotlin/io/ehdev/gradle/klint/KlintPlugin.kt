@@ -11,20 +11,26 @@ open class KlintPlugin : Plugin<Project> {
         val klintConfiguration = project.configurations.maybeCreate("ktlint")
         klintConfiguration.isVisible = false
 
-        project.dependencies.add("klint", "com.github.shyiko:ktlint:0.6.1")
+        project.dependencies.add("ktlint", "com.github.shyiko:ktlint:0.6.1")
 
         val klintTask = project.tasks.create("klint", JavaExec::class.java) { javaExec ->
-            javaExec.classpath = klintConfiguration
             javaExec.main = "com.github.shyiko.ktlint.Main"
             javaExec.args("src/main/kotlin/**/*.kt")
+
+            javaExec.doFirst {
+                javaExec.classpath = klintConfiguration
+            }
         }
 
         project.tasks.getByName("check").dependsOn(klintTask)
 
         project.tasks.create("ktlintFormat", JavaExec::class.java) { javaExec ->
-            javaExec.classpath = klintConfiguration
             javaExec.main = "com.github.shyiko.ktlint.Main"
             javaExec.args("-F", "src/main/kotlin/**/*.kt")
+
+            javaExec.doFirst {
+                javaExec.classpath = klintConfiguration
+            }
         }
     }
 

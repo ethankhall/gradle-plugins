@@ -19,7 +19,7 @@ class DefaultDependencyDefinitions : DependencyDefinitions {
             override fun lock(body: DependencyForcing.() -> Unit): VersionDefinition {
                 val base = DefaultDependencyForcing(version)
                 base.body()
-                if(base.group == null) {
+                if (base.group == null) {
                     throw RuntimeException("Group cannot be null")
                 }
                 forcedDependencies += base
@@ -66,7 +66,7 @@ class DefaultDependencyDefinitions : DependencyDefinitions {
 
     override fun usingVersion(name: String): String = versions[name]!!
 
-    fun buildLibrariesAsMap() : Map<String, List<Map<String, String>>> = library.map { it.key to it.value.map { it.asMap() }}.toMap()
+    fun buildLibrariesAsMap(): Map<String, List<Map<String, String>>> = library.map { it.key to it.value.map { it.asMap() } }.toMap()
 
     fun buildRecommendationProvider(): RecommendationProvider {
         val convertedDeps = forcedDependencies.map {
@@ -75,7 +75,8 @@ class DefaultDependencyDefinitions : DependencyDefinitions {
         }.toMap()
 
         return object : RecommendationProvider {
-            override fun setName(name: String?) { /* NOOP */ }
+            override fun setName(name: String?) { /* NOOP */
+            }
 
             override fun getVersion(org: String, name: String): String? {
                 return convertedDeps["$org:$name"] ?: convertedDeps[org]
