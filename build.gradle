@@ -6,4 +6,10 @@ plugins {
 allprojects {
     group = 'io.ehdev.gradle'
     version = '0.0.1-SNAPSHOT'
+
+    if(path != ':') {
+        buildDir = new File(rootDir, 'build/' + path.replace(':', '-').substring(1))
+    } else {
+        buildDir = new File(rootDir, 'build/' + project.name)
+    }
 }
