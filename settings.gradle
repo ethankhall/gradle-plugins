@@ -1,4 +1,23 @@
+import groovy.json.JsonSlurper
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url 'https://dl.bintray.com/ethankhall/crom/' }
+    }
+    resolutionStrategy {
+        eachPlugin { details ->
+            def id = details.requested.id.id
+            if (id == 'tech.crom.version-manager' && details.requested.version == 'LATEST') {
+                def blob = new JsonSlurper().parse(new URL("http://api.crom.tech/api/v1/project/ethankhall/repo/version-manager-clients/version/latest"))
+                println "Using the latest version of version-manger, which is ${blob.version}"
+                details.useVersion(blob.version)
+            }
+        }
+    }
+}
 include 'klint-plugin'
+include 'base-plugins'
 include 'dependency-script-compiler'
 include 'dependency-script-api'
 include 'dependency-script-plugin'

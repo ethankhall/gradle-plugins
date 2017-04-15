@@ -1,28 +1,36 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'io.ehdev.gradle:klint-plugin:+'
-    }
-}
 plugins {
     id 'com.gradle.build-scan' version '1.6'
-    id "org.jetbrains.kotlin.jvm" version "1.1.1" apply(false)
+    id "org.jetbrains.kotlin.jvm" version "1.1.1" apply false
+    id "com.jfrog.bintray" version "1.7.3" apply false
+    id 'tech.crom.version-manager' version 'LATEST'
 }
 
 allprojects {
     group = 'io.ehdev.gradle'
-    version = '0.0.1-SNAPSHOT'
 
     if(path != ':') {
         buildDir = new File(rootDir, 'build/' + path.replace(':', '-').substring(1))
     } else {
         buildDir = new File(rootDir, 'build/' + project.name)
     }
+
     plugins.withType(org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper) {
-        plugins.apply('io.ehdev.gradle.klint')
+//        plugins.apply('io.ehdev.gradle.klint')
     }
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+versionManager {
+    projectName = 'ethankhall'
+    repoName = 'gradle-plugins'
+}
+
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+
+    publishAlways()
 }

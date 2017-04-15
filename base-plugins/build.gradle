@@ -1,0 +1,23 @@
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'groovy'
+
+apply from : "$rootDir/gradle/publishing.gradle"
+
+dependencies {
+    compile gradleApi()
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.1'
+}
+
+gradlePlugin {
+    plugins {
+        dependnecyResolve {
+            id = "io.ehdev.gradle.dependency-resolve"
+            implementationClass = "io.ehdev.gradle.DependencyCachePlugin"
+        }
+    }
+}
+
+bintray.publications = ((bintray.publications as List<String>) + ['pluginMaven', 'dependnecyResolvePluginMarkerMaven']) as String[]
+bintrayUpload.dependsOn('publishDependnecyResolvePluginMarkerMavenPublicationToMavenLocal')
+bintrayUpload.dependsOn('publishPluginMavenPublicationToMavenLocal')

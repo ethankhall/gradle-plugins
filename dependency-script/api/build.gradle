@@ -2,10 +2,6 @@ apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: 'maven-publish'
 apply plugin: 'groovy'
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.1'
 }

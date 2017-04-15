@@ -1,11 +1,8 @@
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: 'groovy'
 apply plugin: 'java-gradle-plugin'
-apply plugin: 'maven-publish'
 
-repositories {
-    mavenCentral()
-}
+apply from : "$rootDir/gradle/publishing.gradle"
 
 dependencies {
     compile gradleApi()
@@ -14,15 +11,13 @@ dependencies {
 
 gradlePlugin {
     plugins {
-        klintPlugin {
+        klint {
             id = "io.ehdev.gradle.klint"
             implementationClass = "io.ehdev.gradle.klint.KlintPlugin"
         }
     }
 }
 
-publishing {
-    repositories {
-        mavenLocal()
-    }
-}
+bintray.publications = ((bintray.publications as List<String>) + ['pluginMaven', 'klintPluginMarkerMaven']) as String[]
+bintrayUpload.dependsOn('publishKlintPluginMarkerMavenPublicationToMavenLocal')
+bintrayUpload.dependsOn('publishPluginMavenPublicationToMavenLocal')
