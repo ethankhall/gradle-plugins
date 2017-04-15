@@ -38,7 +38,7 @@ bintray {
         repo = 'gradle-plugins'
         name = project.name
         userOrg = 'ethankhall'
-        licenses = ['BSD-3-Clause']
+        licenses = ['BSD 3-Clause']
         vcsUrl = 'https://github.com/ethankhall/gradle-plugins.git'
         version {
             name = project.version
