@@ -1,0 +1,40 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/checkout
+    docker:
+      - image: openjdk:8-jdk
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: deps1-{{ .Branch }}
+
+      - run:
+          name: Update Cache
+          command: ./gradlew dependencies
+
+      - save_cache:
+          key: deps1-{{ .Branch }}
+          paths:
+            - "~/.gradle"
+
+      - run:
+          name: Validate Code
+          command: ./gradlew check
+
+      - run:
+          name: Copy Artifacts
+          command: |
+           mkdir -p ~/test-results
+           find . -maxdepth 5 -name 'TEST-*.xml' -exec cp {} ~/test-results/ \;
+
+      - store_test_results:
+          path: ~/test-results/
+
+      - run:
+          name: Upload Aritfacts
+          command: |
+            ./gradlew claimVersion
+            ./gradlew bintrayUpload
