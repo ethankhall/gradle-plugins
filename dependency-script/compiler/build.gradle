@@ -1,10 +1,7 @@
 apply plugin: "org.jetbrains.kotlin.jvm"
-apply plugin: 'maven-publish'
 apply plugin: 'groovy'
 
-repositories {
-    mavenCentral()
-}
+apply from : "$rootDir/gradle/publishing.gradle"
 
 dependencies {
 
@@ -22,11 +19,6 @@ dependencies {
 }
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
     repositories {
         mavenLocal()
     }

@@ -5,16 +5,14 @@ plugins {
 
 apply plugin: 'org.jetbrains.kotlin.jvm'
 
+apply from : "$rootDir/gradle/publishing.gradle"
+
 intellij {
     version = 'LATEST-EAP-SNAPSHOT'
     type "IC"
     pluginName 'dependency-script'
     downloadSources true
     updateSinceUntilBuild = false
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {

@@ -4,7 +4,8 @@ plugins {
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "java-gradle-plugin"
 apply plugin: 'groovy'
-apply plugin: 'maven-publish'
+
+apply from : "$rootDir/gradle/publishing.gradle"
 
 repositories {
     mavenCentral()
@@ -60,3 +61,7 @@ publishing {
 }
 
 check.dependsOn integrationTest
+
+bintray.publications = ((bintray.publications as List<String>) + ['pluginMaven', 'dependenciesPluginMarkerMaven']) as String[]
+bintrayUpload.dependsOn('publishDependenciesPluginMarkerMavenPublicationToMavenLocal')
+bintrayUpload.dependsOn('publishPluginMavenPublicationToMavenLocal')
