@@ -102,7 +102,7 @@ open class GradleDependencyScriptPlugin : Plugin<Project> {
             val resource = GradleDependencyScriptPlugin::class.java.classLoader.getResourceAsStream("compiler/$it")
             val dest = directory.toPath().resolve(it)
             if (!Files.exists(dest)) {
-                val tempFile = Files.createTempFile("copy", "jar")
+                val tempFile = directory.toPath().resolve(it + ".tmp")
                 Files.copy(resource, tempFile, StandardCopyOption.REPLACE_EXISTING)
                 Files.move(tempFile, dest, StandardCopyOption.ATOMIC_MOVE)
             }
