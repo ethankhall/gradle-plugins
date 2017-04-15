@@ -6,9 +6,3 @@ apply from : "$rootDir/gradle/publishing.gradle"
 dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.1'
 }
-
-publishing {
-    repositories {
-        mavenLocal()
-    }
-}

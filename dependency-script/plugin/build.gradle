@@ -54,12 +54,6 @@ processResources {
     filteringCharset = 'UTF-8'
 }
 
-publishing {
-    repositories {
-        mavenLocal()
-    }
-}
-
 check.dependsOn integrationTest
 
 bintray.publications = ((bintray.publications as List<String>) + ['pluginMaven', 'dependenciesPluginMarkerMaven']) as String[]
