@@ -1,4 +1,4 @@
-package io.ehdev.gradle.dependency.api.internal
+package io.ehdev.gradle.dependency.internal
 
 import java.io.File
 import java.math.BigInteger

@@ -1,9 +1,9 @@
 package io.ehdev.gradle.dependency.plugin
 
 import io.ehdev.gradle.dependency.api.DependencyDefinitions
-import io.ehdev.gradle.dependency.api.internal.md5Digest
-import io.ehdev.gradle.dependency.api.internal.toHex
 import io.ehdev.gradle.dependency.internal.api.DefaultDependencyDefinitions
+import io.ehdev.gradle.dependency.internal.md5Digest
+import io.ehdev.gradle.dependency.internal.toHex
 import netflix.nebula.dependency.recommender.DependencyRecommendationsPlugin
 import netflix.nebula.dependency.recommender.provider.RecommendationProvider
 import netflix.nebula.dependency.recommender.provider.RecommendationProviderContainer
