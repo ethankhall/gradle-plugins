@@ -43,7 +43,9 @@ class DefaultDependencyDefinitions : DependencyDefinitions {
     }
 
     private fun Map<*, *>.toDependencyNotation(): DependencyNotation {
-        return DependencyNotation(this["group"]!! as String, this["name"]!! as String, this["version"] as String?,
+        val forced = findForcedDependency(this["group"]!! as String, this["name"] as String?)
+        val version = if (this.containsKey("version")) this["version"]!! as String else forced?.version
+        return DependencyNotation(this["group"]!! as String, this["name"]!! as String, version,
                 this["configuration"] as String?, this["classification"] as String?)
     }
 
@@ -54,10 +56,15 @@ class DefaultDependencyDefinitions : DependencyDefinitions {
         } else if (split.size == 3) {
             return DependencyNotation(split[0], split[1], split[2], null, null)
         } else if (split.size == 2) {
-            return DependencyNotation(split[0], split[1], null, null, null)
+            val forced = findForcedDependency(split[0], split[1])
+            return DependencyNotation(split[0], split[1], forced?.version, null, null)
         }
 
         throw RuntimeException("Can't parse `$this`")
+    }
+
+    private fun findForcedDependency(group: String, name: String?): DefaultDependencyForcing? {
+        return forcedDependencies.find { it.group == group && if (it.name != null && name != null) it.name == name else true }
     }
 
     override fun excludeLibrary(group: String, name: String?) {
