@@ -3,12 +3,9 @@ package io.ehdev.gradle.dependency.internal
 import java.math.BigInteger
 import java.security.MessageDigest
 
-fun String.md5Digest(): ByteArray {
+fun String.md5Digest(): String {
     val md = MessageDigest.getInstance("MD5")
-    return md.digest(this.toByteArray())
-}
+    val digest = md.digest(this.toByteArray())
 
-fun toHex(bytes: ByteArray): String {
-    val bi = BigInteger(1, bytes)
-    return String.format("%0" + (bytes.size shl 1) + "X", bi)
+    return BigInteger(1, digest).toString(16)
 }

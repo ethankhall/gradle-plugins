@@ -1,31 +1,34 @@
 package io.ehdev.gradle.dependency.plugin
 
-import io.ehdev.gradle.dependency.api.DependencyDefinitions
+import io.ehdev.gradle.dependency.internal.DependencyScriptExecutor
+import io.ehdev.gradle.dependency.internal.DependencyScriptRefs
 import io.ehdev.gradle.dependency.internal.api.DefaultDependencyDefinitions
 import io.ehdev.gradle.dependency.internal.md5Digest
 import netflix.nebula.dependency.recommender.DependencyRecommendationsPlugin
 import netflix.nebula.dependency.recommender.provider.RecommendationProvider
 import netflix.nebula.dependency.recommender.provider.RecommendationProviderContainer
-import org.codehaus.groovy.tools.RootLoader
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.URL
-import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.Properties
 
 open class GradleDependencyScriptPlugin : Plugin<Project> {
 
-    val logger = LoggerFactory.getLogger(GradleDependencyScriptPlugin::class.java)!!
-
     override fun apply(project: Project) {
         project.plugins.apply(DependencyRecommendationsPlugin::class.java)
 
-        val dependencyDefinitions = getDependencyDefinitions(project)
+        val dependencyDefinitions =
+                if (project.rootProject.extensions.findByType(DefaultDependencyDefinitions::class.java) == null) {
+                    val dependencyDefinitions = getDependencyDefinitions(project)
+                    project.rootProject.extensions.add(dependencyDefinitions.javaClass.simpleName, dependencyDefinitions)
+                    dependencyDefinitions
+                } else {
+                    project.rootProject.extensions.findByType(DefaultDependencyDefinitions::class.java)
+                }
 
         val container = project.extensions.getByType(RecommendationProviderContainer::class.java)
         val recommendationProvider = dependencyDefinitions.buildRecommendationProvider()
@@ -77,26 +80,16 @@ open class GradleDependencyScriptPlugin : Plugin<Project> {
         }
 
         val hex = dependencyFiles.map { it.readText() }.joinToString("\n").md5Digest()
-        val cacheDir = File(project.rootDir, "/.gradle/dependency-script/$hex")
-
+        val cachedJar = File(project.rootDir, "/.gradle/dependency-script/$hex.jar")
+        val classListing = File(project.rootDir, "/.gradle/dependency-script/$hex.txt")
         val compilerJars = extractJars(File(project.rootDir, ".gradle/dependency-script/" + findVersion()))
 
-        val scriptClassNames = if (!cacheDir.exists()) {
-            cacheDir.mkdir()
-            compileScriptToClass(dependencyFiles.toList(), cacheDir, compilerJars)
-        } else {
-            emptyList()
-        }
-        val definitions = DefaultDependencyDefinitions()
-        val classLoader = URLClassLoader(compilerJars + cacheDir.toURI().toURL(), this::class.java.classLoader)
-        scriptClassNames.forEach {
-            classLoader.loadClass(it).getConstructor(DependencyDefinitions::class.java).newInstance(definitions)
-        }
+        val refs = DependencyScriptRefs(cachedJar, classListing, compilerJars)
 
-        return definitions
+        return DependencyScriptExecutor(refs).executeScripts(dependencyFiles)
     }
 
-    private fun extractJars(directory: File): Array<URL> {
+    private fun extractJars(directory: File): List<URL> {
         directory.mkdirs()
         return listOf("dependency-script-compiler.jar", "kotlin-compiler-embeddable.jar").map {
             val resource = GradleDependencyScriptPlugin::class.java.classLoader.getResourceAsStream("compiler/$it")
@@ -107,23 +100,6 @@ open class GradleDependencyScriptPlugin : Plugin<Project> {
                 Files.move(tempFile, dest, StandardCopyOption.ATOMIC_MOVE)
             }
             dest.toUri().toURL()
-        }.toTypedArray()
-    }
-
-    private fun compileScriptToClass(dependenciesKts: List<File>, cacheDir: File, compilerJars: Array<URL>): List<String> {
-        val loader = RootLoader(compilerJars, this::class.java.classLoader)
-
-        logger.debug("compiler jars: {}", compilerJars)
-
-        val classNames: MutableList<String> = mutableListOf()
-
-        val runnableClass = loader.loadClass("io.ehdev.gradle.dependency.compiler.CompilerRunnable")
-        val runnable = runnableClass
-                .getConstructor(List::class.java, File::class.java, MutableList::class.java)
-                .newInstance(dependenciesKts, cacheDir, classNames) as Runnable
-        runnable.run()
-
-        logger.debug("class names: {}", classNames)
-        return classNames
+        }
     }
 }

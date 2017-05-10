@@ -11,7 +11,7 @@ intellij {
     version = 'LATEST-EAP-SNAPSHOT'
     type "IC"
     pluginName 'dependency-script'
-    downloadSources true
+    downloadSources false
     updateSinceUntilBuild = false
 }
 

@@ -17,26 +17,28 @@ import org.jetbrains.kotlin.script.KotlinScriptDefinition
 import org.jetbrains.kotlin.utils.PathUtil
 import java.io.File
 
-internal class KotlinScriptCompiler(val classLoader: ClassLoader) {
+internal class KotlinScriptCompiler {
 
     val messageCollector = DelegatingMessageCollector()
 
-    fun compileScript(outputDirectory: File, scriptFile: File): Class<*> {
-        withRootDisposable { rootDisposable ->
+    fun compileScript(outputJar: File, scriptFile: List<File>): List<String> {
+        return withRootDisposable { rootDisposable ->
             val configuration = CompilerConfiguration().apply {
-                addKotlinSourceRoots(listOf(scriptFile.canonicalPath))
+                addKotlinSourceRoots(scriptFile.map { it.canonicalPath })
                 addJvmClasspathRoots(PathUtil.getJdkClassesRoots())
                 ImplicitImports.classpath.forEach { addJvmClasspathRoot(PathUtil.getResourcePathForClass(it)) }
-                put(CommonConfigurationKeys.MODULE_NAME, "dependencyScript")
-                put(JVMConfigurationKeys.OUTPUT_DIRECTORY, outputDirectory)
-                put(JVMConfigurationKeys.RETAIN_OUTPUT_IN_MEMORY, true)
+                put(CommonConfigurationKeys.MODULE_NAME, outputJar.nameWithoutExtension)
+                put(JVMConfigurationKeys.OUTPUT_JAR, outputJar)
                 add(JVMConfigurationKeys.SCRIPT_DEFINITIONS, KotlinScriptDefinition(KotlinDependencyScript::class))
                 put<MessageCollector>(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, messageCollector)
             }
 
-            val environment = KotlinCoreEnvironment.Companion.createForProduction(rootDisposable, configuration, EnvironmentConfigFiles.JVM_CONFIG_FILES)
-            return KotlinToJVMBytecodeCompiler.compileScript(environment, classLoader)
-                    ?: throw IllegalStateException("Internal error: unable to compile script, see log for details")
+            val environment = KotlinCoreEnvironment.createForProduction(rootDisposable, configuration,
+                    EnvironmentConfigFiles.JVM_CONFIG_FILES)
+
+            KotlinToJVMBytecodeCompiler.compileBunchOfSources(environment)
+
+            environment.getSourceFiles().map { it.script?.name }.filterNotNull()
         }
     }
 

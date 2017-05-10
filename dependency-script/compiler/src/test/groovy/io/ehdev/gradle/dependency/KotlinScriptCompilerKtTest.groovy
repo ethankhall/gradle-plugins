@@ -1,7 +1,7 @@
 package io.ehdev.gradle.dependency
 
-import io.ehdev.gradle.dependency.compiler.KotlinScriptCompiler
-import io.ehdev.gradle.dependency.internal.api.DefaultDependencyDefinitions
+import io.ehdev.gradle.dependency.internal.DependencyScriptExecutor
+import io.ehdev.gradle.dependency.internal.DependencyScriptRefs
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
@@ -16,16 +16,17 @@ class KotlinScriptCompilerKtTest extends Specification {
         def file = temporaryFolder.newFile('test-kotlin-file.kts')
         file.text = resource.text
 
-        def compiledDir = temporaryFolder.newFolder("compiled")
-        def definitions = new DefaultDependencyDefinitions()
+        def sharedFolder = temporaryFolder.newFolder("cache")
+        def jarFile = new File(sharedFolder, "compiled.jar")
+        def classFile = new File(sharedFolder, "compiled.txt")
+        def refs = new DependencyScriptRefs(jarFile, classFile, [])
 
         when:
-        def clazz = new KotlinScriptCompiler(KotlinScriptCompilerKtTest.classLoader).compileScript(compiledDir, file)
+        def definitions = new DependencyScriptExecutor(refs).executeScripts([file])
 
         then:
         noExceptionThrown()
-        clazz.newInstance(definitions)
-        compiledDir.list().length == 2
+        jarFile.exists()
 
         definitions.versions['kotlin'] == '1.1.1'
         definitions.versions.size() == 1

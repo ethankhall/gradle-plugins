@@ -1,3 +1,3 @@
-defineVersion("kotlin", "1.1.1").lock { withGroup("org.jetbrains.kotlin") }
+defineVersion("kotlin", "1.1.2").lock { withGroup("org.jetbrains.kotlin") }
 
-defineLibrary("kotlin", "org.jetbrains.kotlin:kotlin-stdlib:${usingVersion("kotlin")}")
+defineLibrary("kotlin", "org.jetbrains.kotlin:kotlin-stdlib")
