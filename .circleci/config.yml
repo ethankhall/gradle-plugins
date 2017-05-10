@@ -9,7 +9,7 @@ jobs:
       - checkout
 
       - restore_cache:
-          key:
+          keys:
             - deps2-{{ .Branch }}-{{ .CheckoutKey }}
             - deps2-{{ .Branch }}-
 
