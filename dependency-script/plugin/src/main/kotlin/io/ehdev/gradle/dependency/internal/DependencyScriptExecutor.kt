@@ -18,8 +18,6 @@ class DependencyScriptExecutor(val scriptRefs: DependencyScriptRefs) {
             compileScriptToClass(dependencyFiles, scriptRefs)
         }
 
-        logger.lifecycle("Executing dependency script")
-
         return executeClassesInJar()
     }
 
@@ -38,6 +36,7 @@ class DependencyScriptExecutor(val scriptRefs: DependencyScriptRefs) {
 
         scriptContainer.updateClassNames(classNames)
 
+        logger.lifecycle("Finished compiling dependency script")
         logger.debug("new jar {} exists: {}", scriptContainer.jarFile, scriptContainer.jarFile.exists())
     }
 
