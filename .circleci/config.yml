@@ -9,14 +9,16 @@ jobs:
       - checkout
 
       - restore_cache:
-          key: deps1-{{ .Branch }}
+          key:
+            - deps2-{{ .Branch }}-{{ .CheckoutKey }}
+            - deps2-{{ .Branch }}-
 
       - run:
           name: Update Cache
           command: ./gradlew resolveDependencies
 
       - save_cache:
-          key: deps1-{{ .Branch }}
+          key: deps2-{{ .Branch }}-{{ .CheckoutKey }}
           paths:
             - "~/.gradle"
 
