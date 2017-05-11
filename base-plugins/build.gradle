@@ -20,6 +20,11 @@ gradlePlugin {
             id = "io.ehdev.gradle.build-dir"
             implementationClass = "io.ehdev.gradle.BuildDirectoryPlugin"
         }
+
+        dev {
+            id = "io.ehdev.gradle.development"
+            implementationClass = "io.ehdev.gradle.DevelopmentPlugin"
+        }
     }
 }
 
