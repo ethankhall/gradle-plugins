@@ -1,9 +1,12 @@
 package io.ehdev.gradle.internal
 
+import org.gradle.api.Project
 import java.io.File
 
 object AddTestSourceSets {
-    fun addSourceSet(project: org.gradle.api.Project, name: String) {
+
+    @JvmStatic
+    fun addSourceSet(project: Project, name: String) {
         val javaPlugin = project.convention.getPlugin(org.gradle.api.plugins.JavaPluginConvention::class.java)
         val sourceSets = javaPlugin.sourceSets
 
