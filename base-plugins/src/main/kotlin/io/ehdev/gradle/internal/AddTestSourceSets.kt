@@ -24,7 +24,6 @@ object AddTestSourceSets {
         compileConfig.extendsFrom(project.configurations.getByName("testCompile"))
         runtimeConfig.extendsFrom(project.configurations.getByName("testRuntime"))
 
-
         val integTest = project.tasks.create(name, org.gradle.api.tasks.testing.Test::class.java) { test ->
             test.shouldRunAfter(project.tasks.getByName("test"))
             test.testClassesDir = newSourceSet.output.classesDir

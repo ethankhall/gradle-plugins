@@ -4,7 +4,7 @@ import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
 
-abstract class LocalTestListener: TestListener {
+abstract class LocalTestListener : TestListener {
     override fun beforeTest(testDescriptor: TestDescriptor) {
         //noop
     }

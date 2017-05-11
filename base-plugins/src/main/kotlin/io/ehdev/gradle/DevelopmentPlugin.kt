@@ -27,9 +27,9 @@ open class DevelopmentPlugin : Plugin<Project> {
         AddTestSourceSets.addSourceSet(project, "integTest")
 
         project.tasks.withType(Test::class.java) { task ->
-            task.addTestListener(object: LocalTestListener() {
+            task.addTestListener(object : LocalTestListener() {
                 override fun afterSuite(suite: TestDescriptor, result: TestResult) {
-                    if(suite.parent == null) {
+                    if (suite.parent == null) {
                         project.logger.lifecycle("Results: {} ({} tests, {} successes, {} failures, {} skipped)",
                                 result.resultType, result.testCount, result.successfulTestCount,
                                 result.failedTestCount, result.skippedTestCount)
@@ -40,8 +40,8 @@ open class DevelopmentPlugin : Plugin<Project> {
             val jacoco = task.extensions.getByType(JacocoTaskExtension::class.java)
             jacoco.apply {
                 isAppend = true
-                destinationFile = File(project.buildDir, "/jacoco/${ task.name }-jacocoTest.exec")
-                classDumpDir = File(project.buildDir, "/jacoco/${ task.name }-classpathdumps")
+                destinationFile = File(project.buildDir, "/jacoco/${task.name}-jacocoTest.exec")
+                classDumpDir = File(project.buildDir, "/jacoco/${task.name}-classpathdumps")
             }
         }
 
