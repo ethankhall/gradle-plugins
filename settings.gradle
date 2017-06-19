@@ -19,7 +19,7 @@ pluginManagement {
             if (id in ['io.ehdev.gradle.dependency-resolve', 'io.ehdev.gradle.klint',
                        'io.ehdev.gradle.build-dir', 'io.ehdev.gradle.dependency-script'] && details.requested.version == 'LATEST') {
                 println "Using the latest version of $id, which is ${gradlePlugins.version}"
-                details.useVersion('0.0.15')
+                details.useVersion(gradlePlugins.version)
             }
         }
     }
