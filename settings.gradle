@@ -8,7 +8,7 @@ pluginManagement {
     }
     resolutionStrategy {
         def clients = new JsonSlurper().parse(new URL("http://api.crom.tech/api/v1/project/ethankhall/repo/version-manager-clients/version/latest"))
-        def gradlePlugins = new JsonSlurper().parse(new URL("http://api.crom.tech/api/v1/project/ethankhall/repo/gradle-plugins/version/latest"))
+        def gradlePlugins = new JsonSlurper().parse(new URL("http://api.crom.tech/api/v1/project/ethankhall/repo/gradle-plugins/version/latest?filter=RELEASED"))
         eachPlugin { details ->
             def id = details.requested.id.id
             if (id == 'tech.crom.version-manager' && details.requested.version == 'LATEST') {
