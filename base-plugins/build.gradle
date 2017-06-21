@@ -28,7 +28,7 @@ gradlePlugin {
     }
 }
 
-['dependnecyResolve', 'buildDirectory'].each {
+['dependnecyResolve', 'dev', 'buildDirectory'].each {
     bintray.publications = ((bintray.publications as List<String>) + "${ it }PluginMarkerMaven") as String[]
     bintrayUpload.dependsOn("publish${ it.capitalize() }PluginMarkerMavenPublicationToMavenLocal")
 }
