@@ -13,7 +13,7 @@ internal class DelegatingMessageCollector : MessageCollector {
     override fun clear() {
     }
 
-    override fun report(severity: CompilerMessageSeverity, message: String, location: CompilerMessageLocation) {
+    override fun report(severity: CompilerMessageSeverity, message: String, location: CompilerMessageLocation?) {
         when (severity) {
             CompilerMessageSeverity.ERROR -> logger.error(message)
             CompilerMessageSeverity.EXCEPTION -> logger.error(message)

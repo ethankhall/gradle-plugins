@@ -6,7 +6,7 @@ apply from: "$rootDir/gradle/publishing.gradle"
 
 dependencies {
     compile gradleApi()
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.1'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.4-3'
 }
 
 gradlePlugin {

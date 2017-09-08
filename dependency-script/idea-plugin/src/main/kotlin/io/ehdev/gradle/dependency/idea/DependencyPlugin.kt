@@ -4,17 +4,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.projectRoots.JavaSdk
 import com.intellij.openapi.projectRoots.ProjectJdkTable
 import com.intellij.openapi.projectRoots.ex.PathUtilEx
-import com.intellij.util.PathUtil.getJarPathForClass
-import io.ehdev.gradle.dependency.compiler.ImplicitImports
 import io.ehdev.gradle.dependency.compiler.KotlinDependencyScript
 import org.jetbrains.kotlin.script.ScriptTemplatesProvider
+import java.io.File
 
-class DependencyPlugin(val project: Project) : ScriptTemplatesProvider {
+class DependencyPlugin(val project: Project, override val templateClasspath: List<File>) : ScriptTemplatesProvider {
     override val isValid: Boolean = true
-
-    override val dependenciesClasspath: Iterable<String> by lazy {
-        ImplicitImports.classpath.map(::getJarPathForClass)
-    }
 
     override val environment: Map<String, Any?>? get() = mapOf(
             "USE_NULL_RESOLVE_SCOPE" to true,

@@ -1,12 +1,12 @@
 package io.ehdev.gradle.dependency.compiler
 
-import org.jetbrains.kotlin.script.KotlinScriptExternalDependencies
-import org.jetbrains.kotlin.script.ScriptContents
-import org.jetbrains.kotlin.script.ScriptDependenciesResolver
-import org.jetbrains.kotlin.script.asFuture
+import kotlin.script.dependencies.KotlinScriptExternalDependencies
+import kotlin.script.dependencies.ScriptContents
+import kotlin.script.dependencies.ScriptDependenciesResolver
 import org.jetbrains.kotlin.utils.PathUtil
 import java.io.File
 import java.util.concurrent.Future
+import kotlin.script.dependencies.asFuture
 
 class DepKtsScriptDependenciesResolver : ScriptDependenciesResolver {
 

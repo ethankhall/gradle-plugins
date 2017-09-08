@@ -1,7 +1,10 @@
 package io.ehdev.gradle.internal
 
 import org.gradle.api.Project
+import org.gradle.api.tasks.testing.Test
+import org.gradle.plugins.ide.idea.model.IdeaModel
 import java.io.File
+import java.util.Arrays
 
 object AddTestSourceSets {
 
@@ -27,25 +30,25 @@ object AddTestSourceSets {
         compileConfig.extendsFrom(project.configurations.getByName("testCompile"))
         runtimeConfig.extendsFrom(project.configurations.getByName("testRuntime"))
 
-        val integTest = project.tasks.create(name, org.gradle.api.tasks.testing.Test::class.java) { test ->
+        val integTest = project.tasks.create(name, Test::class.java) { test ->
             test.shouldRunAfter(project.tasks.getByName("test"))
-            test.testClassesDir = newSourceSet.output.classesDir
+            test.testClassesDirs = newSourceSet.output.classesDirs
             test.classpath = newSourceSet.runtimeClasspath
-            test.reports.html.setDestination(java.io.File(project.buildDir, "/reports/" + name))
+            test.reports.html.destination = File(project.buildDir, "/reports/" + name)
         }
 
         project.tasks.getByName("check").dependsOn(integTest)
 
-        val idea = project.extensions.getByType(org.gradle.plugins.ide.idea.model.IdeaModel::class.java)
+        val idea = project.extensions.getByType(IdeaModel::class.java)
 
-        val sourceSetDir = java.io.File(project.projectDir, "src/" + name)
+        val sourceSetDir = File(project.projectDir, "src/" + name)
 
-        val sourceDirs = java.util.ArrayList<File>()
-        sourceDirs.addAll(java.util.Arrays.asList(java.io.File(sourceSetDir, "java"), java.io.File(sourceSetDir, "groovy")))
+        val sourceDirs = ArrayList<File>()
+        sourceDirs.addAll(Arrays.asList(File(sourceSetDir, "java"), File(sourceSetDir, "groovy")))
         sourceDirs.addAll(idea.module.testSourceDirs)
         sourceDirs.addAll(newSourceSet.resources.srcDirs)
 
-        idea.module.testSourceDirs = java.util.HashSet(sourceDirs)
+        idea.module.testSourceDirs = HashSet(sourceDirs)
 
         idea.module.scopes["TEST"]!!["plus"]!!.add(compileConfig)
         idea.module.scopes["TEST"]!!["plus"]!!.add(runtimeConfig)

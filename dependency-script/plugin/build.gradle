@@ -23,7 +23,7 @@ dependencies {
     compile (project(':dependency-script-api')) {
         transitive = false
     }
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.1'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.4-3'
     compile 'com.netflix.nebula:nebula-dependency-recommender:4.1.2'
 
     compiler project(':dependency-script-compiler')

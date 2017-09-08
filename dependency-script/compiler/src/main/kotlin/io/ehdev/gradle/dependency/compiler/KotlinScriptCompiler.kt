@@ -19,13 +19,13 @@ import java.io.File
 
 internal class KotlinScriptCompiler {
 
-    val messageCollector = DelegatingMessageCollector()
+    private val messageCollector = DelegatingMessageCollector()
 
     fun compileScript(outputJar: File, scriptFile: List<File>): List<String> {
         return withRootDisposable { rootDisposable ->
             val configuration = CompilerConfiguration().apply {
                 addKotlinSourceRoots(scriptFile.map { it.canonicalPath })
-                addJvmClasspathRoots(PathUtil.getJdkClassesRoots())
+                addJvmClasspathRoots(PathUtil.getJdkClassesRootsFromCurrentJre())
                 ImplicitImports.classpath.forEach { addJvmClasspathRoot(PathUtil.getResourcePathForClass(it)) }
                 put(CommonConfigurationKeys.MODULE_NAME, outputJar.nameWithoutExtension)
                 put(JVMConfigurationKeys.OUTPUT_JAR, outputJar)

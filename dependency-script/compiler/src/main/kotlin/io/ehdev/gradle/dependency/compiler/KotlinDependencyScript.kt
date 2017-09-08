@@ -2,7 +2,7 @@ package io.ehdev.gradle.dependency.compiler
 
 import io.ehdev.gradle.dependency.api.DependencyDefinitions
 import io.ehdev.gradle.dependency.api.internal.DependencyScript
-import org.jetbrains.kotlin.script.ScriptTemplateDefinition
+import kotlin.script.templates.ScriptTemplateDefinition
 
 @KotlinDependencyScriptMarker
 @ScriptTemplateDefinition(resolver = DepKtsScriptDependenciesResolver::class, scriptFilePattern = ".*\\.dep\\.kts")
