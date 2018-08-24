@@ -1,8 +1,0 @@
-apply plugin: "org.jetbrains.kotlin.jvm"
-apply plugin: 'groovy'
-
-apply from : "$rootDir/gradle/publishing.gradle"
-
-dependencies {
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.4-3'
-}

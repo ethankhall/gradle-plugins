@@ -1,0 +1,5 @@
+[versions]
+kotlin = { version = "1.2.50", group = "org.jetbrains.kotlin"}
+
+[library]
+kotlin = "org.jetbrains.kotlin:kotlin-stdlib"

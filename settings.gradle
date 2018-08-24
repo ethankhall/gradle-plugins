@@ -1,37 +1,23 @@
-import groovy.json.JsonSlurper
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven { url 'https://dl.bintray.com/ethankhall/crom/' }
         maven { url 'https://dl.bintray.com/ethankhall/gradle-plugins/' }
     }
     resolutionStrategy {
-        def clients = new JsonSlurper().parse(new URL("http://api.crom.tech/api/v1/project/ethankhall/repo/version-manager-clients/version/latest"))
-        def gradlePlugins = new JsonSlurper().parse(new URL("http://api.crom.tech/api/v1/project/ethankhall/repo/gradle-plugins/version/latest?filter=RELEASED"))
         eachPlugin { details ->
+            def latestVersion = "0.0.25"
             def id = details.requested.id.id
-            if (id == 'tech.crom.version-manager' && details.requested.version == 'LATEST') {
-                println "Using the latest version of $id, which is ${clients.version}"
-                details.useVersion(clients.version)
-            }
-
-            if (id in ['io.ehdev.gradle.dependency-resolve', 'io.ehdev.gradle.klint',
-                       'io.ehdev.gradle.build-dir', 'io.ehdev.gradle.dependency-script'] && details.requested.version == 'LATEST') {
-                println "Using the latest version of $id, which is ${gradlePlugins.version}"
-                details.useVersion(gradlePlugins.version)
+            if (id in ['io.ehdev.gradle.dependency-resolve',
+                       'io.ehdev.gradle.klint',
+                       'io.ehdev.gradle.build-dir',
+                       'io.ehdev.gradle.dependency-script',
+                       'io.ehdev.gradle.development'] && details.requested.version == 'LATEST') {
+                println "Using the latest version of $id, which is $latestVersion"
+                details.useVersion(latestVersion)
             }
         }
     }
 }
 include 'klint-plugin'
 include 'base-plugins'
-include 'dependency-script-compiler'
-include 'dependency-script-api'
 include 'dependency-script-plugin'
-include 'dependency-script-idea-plugin'
-
-project(':dependency-script-compiler').projectDir = new File(settingsDir, 'dependency-script/compiler')
-project(':dependency-script-api').projectDir = new File(settingsDir, 'dependency-script/api')
-project(':dependency-script-plugin').projectDir = new File(settingsDir, 'dependency-script/plugin')
-project(':dependency-script-idea-plugin').projectDir = new File(settingsDir, 'dependency-script/idea-plugin')
