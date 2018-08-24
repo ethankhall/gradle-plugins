@@ -18,25 +18,25 @@ object DependencyTomlResolver {
     }
 
     private fun resolveExclude(toml: Toml, definitions: DefaultDependencyDefinitions) {
-        val excludeTable = toml.getTables("exclude")
+        val excludeTable = toml.getTables("exclude") ?: return
         for (exclude in excludeTable) {
             definitions.excludeLibrary(exclude.getString("group"), exclude.getString("module"))
         }
     }
 
     private fun resolveLibraries(toml: Toml, definitions: DefaultDependencyDefinitions) {
-        val librariesTable = toml.getTable("libraries")
+        val librariesTable = toml.getTable("libraries") ?: return
         for ((library, value) in librariesTable.entrySet()) {
             when (value) {
-                is List<*> -> definitions.defineLibrary(library, value)
-                is String -> definitions.defineLibrary(library, value)
+                is List<*> -> definitions.defineLibrary(library, value.map { it.toString() })
+                is String -> definitions.defineLibrary(library, listOf(value))
                 else -> throw GradleException("Unknown type! " + value.javaClass)
             }
         }
     }
 
     private fun resolveVersions(toml: Toml, definitions: DefaultDependencyDefinitions) {
-        val versionTable = toml.getTable("versions")
+        val versionTable = toml.getTable("versions") ?: return
         for (name in versionTable.toMap().keys) {
             val entryTable = versionTable.getTable(name)
             val version = entryTable.getString("version")

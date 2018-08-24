@@ -28,10 +28,6 @@ class DefaultDependencyDefinitions : DependencyDefinitions {
         }
     }
 
-    override fun defineLibrary(name: String, vararg libraries: Any) {
-        defineLibrary(name, libraries.toList())
-    }
-
     override fun defineLibrary(name: String, libraries: List<Any>) {
         library[name] = libraries.map {
             when (it) {

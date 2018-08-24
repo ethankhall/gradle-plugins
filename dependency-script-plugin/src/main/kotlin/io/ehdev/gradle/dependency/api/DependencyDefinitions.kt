@@ -8,8 +8,6 @@ interface DependencyDefinitions : Serializable {
 
     fun defineLibrary(name: String, libraries: List<Any>)
 
-    fun defineLibrary(name: String, vararg libraries: Any)
-
     fun excludeLibrary(group: String, name: String? = null)
 
     fun usingVersion(name: String): String
