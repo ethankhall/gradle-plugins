@@ -8,6 +8,7 @@ import netflix.nebula.dependency.recommender.provider.RecommendationProviderCont
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import java.io.File
 import java.nio.file.Paths
 
 open class GradleDependencyTomlPlugin : Plugin<Project> {
@@ -58,7 +59,7 @@ open class GradleDependencyTomlPlugin : Plugin<Project> {
     }
 
     private fun getDependencyDefinitions(project: Project): DefaultDependencyDefinitions {
-        val tomlFile = project.rootDir.toPath().relativize(Paths.get("gradle", "dependencies.toml")).toFile()
+        val tomlFile = File(project.rootDir, "gradle${File.separatorChar}dependencies.toml")
         if (!tomlFile.exists()) {
             throw GradleException("Unable to find ${tomlFile.absolutePath}")
         }
