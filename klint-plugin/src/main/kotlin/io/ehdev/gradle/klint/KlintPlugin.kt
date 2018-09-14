@@ -11,7 +11,7 @@ open class KlintPlugin : Plugin<Project> {
         val klintConfiguration = project.configurations.maybeCreate("ktlint")
         klintConfiguration.isVisible = false
 
-        project.dependencies.add("ktlint", "com.github.shyiko:ktlint:0.6.1")
+        project.dependencies.add("ktlint", "com.github.shyiko:ktlint:0.28.0")
 
         val klintTask = project.tasks.create("klint", JavaExec::class.java) { javaExec ->
             javaExec.main = "com.github.shyiko.ktlint.Main"
