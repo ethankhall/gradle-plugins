@@ -17,7 +17,6 @@ open class DevelopmentPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         project.plugins.apply("java")
-        project.plugins.apply("groovy")
         project.plugins.apply("idea")
         project.plugins.apply("jacoco")
 
