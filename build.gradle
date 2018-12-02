@@ -13,7 +13,7 @@ allprojects {
     apply plugin: 'io.ehdev.gradle.build-dir'
 
     group = 'io.ehdev.gradle'
-    version = "0.0.30"
+    version = "0.0.31"
 
     plugins.withType(org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper) {
         plugins.apply('io.ehdev.gradle.klint')
